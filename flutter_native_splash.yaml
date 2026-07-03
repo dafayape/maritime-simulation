@@ -1,0 +1,11 @@
+# Splash screen native (sebelum engine Flutter siap) — warna latar #020617
+# menyamai background dashboard frontend (slate-950), logo dari
+# tool/generate_branding.py. Regenerasi: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#020617"
+  image: assets/branding/splash_logo.png
+  android_12:
+    color: "#020617"
+    image: assets/branding/splash_logo_android12.png
+  ios: true
+  fullscreen: true

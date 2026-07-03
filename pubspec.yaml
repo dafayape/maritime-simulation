@@ -1,0 +1,52 @@
+name: maritim_node
+description: >-
+  Terminal node kapal untuk Maritime LoRa Mesh Network Simulator — aplikasi
+  Flutter yang berperan sebagai perangkat radio LoRa half-duplex virtual:
+  binary packing MessagePack, antrean Store-and-Forward SQLite, mesin
+  ACK/Auto-Retry, dan relay mesh via WebSocket ke backend Go.
+publish_to: 'none'
+
+# Versi aplikasi (versionName+versionCode Android). Naikkan sesuai SemVer dan
+# catat setiap rilis di CHANGELOG.md agar jejak perubahan mudah dilacak.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management & DI (SRS §1) — memisahkan mesin data-link dari widget tree.
+  flutter_riverpod: ^2.6.1
+  # Simulasi gelombang radio: kanal WebSocket full-duplex ke /ws/nodes.
+  web_socket_channel: ^3.0.1
+  # Antrean Store-and-Forward persisten (SRS §2, tabel transmit_queue).
+  sqflite: ^2.4.1
+  # Binary packing payload dinamis — validasi ukuran murni dari byte array.
+  msgpack_dart: ^1.0.1
+  # Pelacakan posisi GPS asli untuk node:ping tiap 3 detik.
+  geolocator: ^14.0.0
+  # REST bootstrap: daftar sesi aktif, healthz, stats.
+  http: ^1.2.2
+  # packet_id UUID v4.
+  uuid: ^4.5.1
+  # Persistensi konfigurasi ringan (URL server, node id, mode GPS).
+  shared_preferences: ^2.5.2
+  path: ^1.9.0
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # Menjalankan sqflite di host VM (unit test tanpa perangkat).
+  sqflite_common_ffi: ^2.3.4
+  # Generator aset branding (ikon launcher + splash native).
+  flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/branding/

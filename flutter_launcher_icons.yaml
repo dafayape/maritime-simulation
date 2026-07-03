@@ -1,0 +1,10 @@
+# Konfigurasi ikon launcher — aset dihasilkan oleh tool/generate_branding.py
+# (logo identik dengan frontend/src/app/icon.svg).
+# Regenerasi: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/branding/app_icon.png
+  adaptive_icon_background: "#0f172a"
+  adaptive_icon_foreground: assets/branding/app_icon_foreground.png
+  remove_alpha_ios: true
