@@ -214,7 +214,7 @@ void main() {
       expect(telemetry, isNotEmpty,
           reason: 'telemetri Syahbandar harus berisi frame terkirim');
       expect(telemetry.first['origin_node_id'], 'KPL-M01');
-      expect(telemetry.first['routing_path'], contains('$testEdgeCode'));
+      expect(telemetry.first['routing_path'], contains(testEdgeCode));
 
       final rest = RestClient(apiBase);
       final stats = await rest.stats(sessionId);
