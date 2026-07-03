@@ -1,0 +1,80 @@
+# CI/CD branch `mobile` — Maritim Node (Flutter).
+#
+# Pola sama dengan branch backend/frontend: setiap push memicu gerbang mutu
+# (analyze + test) lalu build artefak. Karena produk akhirnya APK (bukan
+# layanan), tahap "deploy" berupa unggah artefak bernama versi ke GitHub
+# Actions — developer mengunduh APK persis dari commit mana pun.
+#
+# Versi artefak diambil dari `version:` pubspec.yaml oleh tool/build_apk.sh →
+# dist/maritim-node-v<versi>-build<build>-release.apk (+ .sha256).
+# Naikkan versi + catat CHANGELOG.md setiap rilis.
+name: CI/CD — Mobile (Maritim Node)
+
+on:
+  push:
+    branches: [mobile]
+  pull_request:
+    branches: [mobile]
+
+env:
+  FLUTTER_VERSION: '3.44.4'
+
+jobs:
+  quality:
+    name: Analyze & unit/widget test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Pasang dependensi
+        run: flutter pub get
+
+      - name: Analisis statis
+        run: flutter analyze
+
+      - name: Unit & widget test
+        run: flutter test
+
+      # Uji integrasi live (test_live/) sengaja TIDAK berjalan di CI:
+      # membutuhkan stack backend Docker (branch `backend` repo ini) pada
+      # localhost:8080. Jalankan manual sebelum rilis:
+      #   cd ../backend && docker compose up -d
+      #   cd ../mobile  && flutter test test_live
+
+  build-apk:
+    name: Build APK release
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Pasang dependensi
+        run: flutter pub get
+
+      - name: Build & beri nama artefak sesuai versi
+        run: tool/build_apk.sh
+
+      - name: Unggah artefak APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: maritim-node-apk
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
