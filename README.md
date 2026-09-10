@@ -6,6 +6,7 @@
 
 An integrated platform designed to simulate and evaluate low-frequency LoRa radio ad-hoc networks in maritime environments. Features realistic physical radio propagation, pure binary payload compression, dynamic multi-hop routing topologies, and real-time fleet command visualization.
 
+[![CI Quality Gates](https://github.com/dafayape/maritime-simulation/actions/workflows/ci.yml/badge.svg)](https://github.com/dafayape/maritime-simulation/actions/workflows/ci.yml)
 [![ISO 25010](https://img.shields.io/badge/ISO%2FIEC-25010%20Compliant-success?logo=checkmarx&logoColor=white)](#iso-standards-compliance)
 [![ISO 27001](https://img.shields.io/badge/ISO%2FIEC-27001%20Hardened-blue?logo=auth0&logoColor=white)](SECURITY.md)
 [![ISO 12207](https://img.shields.io/badge/ISO%2FIEC-12207%20Lifecycle-orange)](#iso-standards-compliance)
