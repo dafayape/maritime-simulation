@@ -130,5 +130,5 @@ Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
 ## Author
 
 **Daffa Jaya Perkasa**  
-Full-Stack | Mobile | AI | DevOps Engineer  
-*GitHub: [@dafayape](https://github.com/dafayape)* • *Contact: [dafayape@gmail.com](mailto:dafayape@gmail.com)*
+Full-Stack | Mobile | AI | DevOps Engineer
+
