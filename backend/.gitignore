@@ -1,0 +1,20 @@
+# local environment & secrets
+.env
+
+# build artifacts
+/bin/
+/nodesim
+/server
+coverage.out
+
+# editor noise
+.idea/
+.vscode/
+*.swp
+
+# AI Agent & Local Tooling (ISO/IEC 12207)
+.agent/
+.agents/
+.cursor/
+.claude/
+.skills/

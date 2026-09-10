@@ -1,0 +1,64 @@
+# Base stack — production-safe defaults:
+#   * PostgreSQL and Redis are NOT exposed on the host,
+#   * pprof is off,
+#   * only the API/WebSocket port is published.
+# Development conveniences live in docker-compose.override.yml (picked up
+# automatically by `docker compose up`). For a VPS, combine with
+# docker-compose.prod.yml — see README "Production deployment".
+
+name: lora-mesh-simulator
+
+services:
+  backend:
+    build: .
+    image: lora-mesh-simulator-backend:latest
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    environment:
+      HTTP_ADDR: ":8080"
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-simulator}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-simulator}
+      POSTGRES_DB: ${POSTGRES_DB:-lora_simulator}
+      REDIS_ADDR: redis:6379
+      TOPOLOGY_INTERVAL_SECONDS: ${TOPOLOGY_INTERVAL_SECONDS:-5}
+      PING_MIN_INTERVAL_SECONDS: ${PING_MIN_INTERVAL_SECONDS:-3}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-*}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-simulator}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-simulator}
+      POSTGRES_DB: ${POSTGRES_DB:-lora_simulator}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-simulator} -d ${POSTGRES_DB:-lora_simulator}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # All Redis state is volatile by design (geo positions, dedup cache,
+    # routing tables); persistence is deliberately disabled.
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+volumes:
+  pgdata:

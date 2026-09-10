@@ -1,0 +1,18 @@
+# Overlay produksi VPS:
+#   NEXT_PUBLIC_API_URL="" docker compose \
+#     -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Frontend dikunci ke localhost; nginx/Caddy di depan menangani TLS dan
+# mem-proxy /api/v1 + /ws ke backend (NEXT_PUBLIC_API_URL kosong = browser
+# memakai origin domainnya sendiri). Lihat README "Deploy produksi (VPS)".
+
+services:
+  frontend:
+    restart: always
+    ports: !override
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"

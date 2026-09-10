@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+}
+
+/* ---- Interaksi global ---- */
+
+/* Tailwind v3 Preflight tidak lagi memberi cursor pointer pada tombol; kembalikan
+   agar setiap elemen klik terasa dapat ditekan (kecuali yang sedang disabled). */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+label[for],
+summary {
+  cursor: pointer;
+}
+
+/* Focus ring yang jelas untuk navigasi keyboard (a11y — hanya saat :focus-visible
+   sehingga tidak mengganggu klik mouse). */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid #38bdf8; /* sky-400 */
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Hormati preferensi kurangi-gerak: matikan animasi dekoratif (spin/pulse). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Sembunyikan tombol spinner naik/turun input number (mis. TX Power) — nilai
+   diketik langsung atau dibatasi rentang valid, panah bawaan hanya derau. */
+input[type='number'].no-spinner::-webkit-inner-spin-button,
+input[type='number'].no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'].no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Baris log audit: lewati render baris di luar viewport agar panel tetap
+   mulus meski berisi ribuan baris (virtualisasi native, tanpa dependensi). */
+.log-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 16px;
+}
+
+/* ---- Leaflet: kanvas peta fullscreen + tema gelap ---- */
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #0f172a; /* slate-900: mengisi celah saat tile belum termuat */
+}
+
+/* Popup kapal/edge: selektor di-anchor ke `.leaflet-popup` agar spesifisitasnya
+   mengalahkan leaflet.css bawaan (yang men-set background putih + teks #333)
+   apa pun urutan pemuatan CSS-nya — mencegah "teks terang di atas putih" yang
+   tak terbaca. Warna teks dasar dikunci terang (slate-100) supaya semua tier
+   di dalam popup kontras di atas latar gelap, tetap selaras tema. */
+.leaflet-popup .leaflet-popup-content-wrapper,
+.leaflet-popup .leaflet-popup-tip {
+  @apply border border-white/10 bg-slate-900 text-slate-100 shadow-xl;
+}
+
+.leaflet-popup .leaflet-popup-content-wrapper {
+  @apply rounded-lg;
+}
+
+.leaflet-popup .leaflet-popup-content {
+  @apply text-slate-100;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  @apply text-slate-300;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  @apply text-white;
+}
+
+.leaflet-control-attribution {
+  @apply bg-slate-900/70 text-[10px] text-slate-400;
+}
+
+.leaflet-control-attribution a {
+  @apply text-slate-300;
+}
+
+.leaflet-bar a {
+  @apply border-white/10 bg-slate-900 text-slate-200;
+}
+
+.leaflet-bar a:hover {
+  @apply bg-slate-800;
+}
+
+/* Panah arah rute mesh: segitiga CSS yang dirotasi sesuai bearing node->parent */
+.route-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 9px solid #38bdf8; /* sky-400, senada garis polyline */
+  opacity: 0.9;
+}
+
+/* Partikel data yang mengalir sepanjang rute node->parent tiap kali sebuah
+   paket berhasil di-relay (forward) atau mendarat (deliver) — memberi kesan
+   "jaringan hidup". Marker ditempatkan di titik ASAL; div-nya bergeser dari
+   (0,0) ke (--dx,--dy) piksel, delta layar dihitung sekali saat spawn lalu
+   dibuang setelah animasi (durasi --flow-ms). */
+.flow-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #e0f2fe 0%, #38bdf8 55%, rgba(56, 189, 248, 0) 78%);
+  box-shadow: 0 0 8px 2px rgba(56, 189, 248, 0.7);
+  animation: flow-travel var(--flow-ms, 850ms) linear forwards;
+  will-change: transform, opacity;
+}
+
+.flow-dot.flow-deliver {
+  background: radial-gradient(circle, #d1fae5 0%, #10b981 55%, rgba(16, 185, 129, 0) 78%);
+  box-shadow: 0 0 9px 2px rgba(16, 185, 129, 0.78);
+}
+
+@keyframes flow-travel {
+  0% {
+    transform: translate(0, 0) scale(0.55);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx, 0), var(--dy, 0)) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Marker Virtual Edge (Syahbandar) */
+.edge-marker {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: rgba(34, 211, 238, 0.92); /* cyan-400 */
+  border: 2px solid rgba(15, 23, 42, 0.9);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.6);
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Scrollbar tipis untuk panel log / daftar kapal */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(71 85 105) transparent;
+}
+
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb {
+  @apply rounded bg-slate-600;
+}

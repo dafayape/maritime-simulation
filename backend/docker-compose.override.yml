@@ -1,0 +1,19 @@
+# Development overrides — loaded automatically by `docker compose up`.
+# Adds host access to the databases and the pprof profiler; never use these
+# mappings on a public VPS.
+
+services:
+  backend:
+    environment:
+      PPROF_ADDR: ":6060"
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+    ports:
+      - "127.0.0.1:6060:6060"
+
+  postgres:
+    ports:
+      - "127.0.0.1:5433:5432"
+
+  redis:
+    ports:
+      - "127.0.0.1:6380:6379"

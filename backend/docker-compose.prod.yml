@@ -1,0 +1,33 @@
+# Production overlay for a VPS:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# The API stays bound to localhost; put a reverse proxy (Caddy / Nginx) in
+# front for TLS so the dashboard uses https:// and the ships use wss://.
+# See README "Production deployment (VPS)".
+
+services:
+  backend:
+    restart: always
+    ports: !override
+      - "127.0.0.1:${HTTP_PORT:-8080}:8080"
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  postgres:
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  redis:
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

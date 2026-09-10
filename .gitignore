@@ -1,0 +1,66 @@
+# ==============================================================================
+# Master Git Ignore Configuration (ISO/IEC 12207 Compliant)
+# Project: Maritime LoRa Mesh Network Simulator Monorepo
+# ==============================================================================
+
+# OS Artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# AI Agent & Local Tooling Isolation (ISO/IEC 12207)
+.agent/
+.agents/
+.cursor/
+.claude/
+.skills/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment Secrets & Sensitive Data (ISO/IEC 27001)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Backend (Go) Artifacts
+backend/bin/
+backend/server
+backend/nodesim
+backend/coverage.out
+
+# Frontend (Next.js) Artifacts
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+frontend/coverage/
+
+# Mobile (Flutter/Dart) Artifacts
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/.pub-cache/
+mobile/.pub/
+mobile/build/
+mobile/dist/
+mobile/coverage/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/app/debug/
+mobile/android/app/profile/
+mobile/android/app/release/
+mobile/ios/Flutter/.last_build_id
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+
+# Global Logs
+*.log
+npm-debug.log*
+yarn-debug.log*

@@ -1,0 +1,22 @@
+# Dasbor frontend — berdiri sendiri karena SEMUA panggilan API/WebSocket
+# dilakukan browser pengguna, bukan container ini; frontend tidak butuh
+# jalur jaringan container-ke-backend.
+#
+# Dev lokal (backend jalan di :8080 dari ../backend):
+#   docker compose up -d --build
+# Produksi VPS: kombinasikan dengan docker-compose.prod.yml (lihat README).
+
+name: lora-mesh-dashboard
+
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        # Alamat backend DILIHAT DARI BROWSER (bukan dari dalam container).
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL-http://localhost:8080}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL-}
+    image: lora-mesh-simulator-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"

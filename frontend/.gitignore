@@ -1,0 +1,27 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next/
+/out/
+
+# testing
+/coverage
+
+# local environment & secrets
+.env
+.env*.local
+
+# misc
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+
+# AI Agent & Local Tooling (ISO/IEC 12207)
+.agent/
+.agents/
+.cursor/
+.claude/
+.skills/
+.vscode/
+.idea/
